@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centro Médico Galenos - Iniciar Sesión</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: rgb(198, 253, 253); /* Color de fondo azul */
+            
+
+        }
+
+        .container {
+            width: 300px;
+            padding: 20px;
+            background-color: #f1f1f1;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+            margin-top: 50px;
+        }
+
+        .imgcontainer {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+        }
+
+        input[type=text],
+        input[type=password] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .entrar-btn {
+            background-color:#28a745;
+            color: white;
+            margin-right: 10px;
+        }
+        
+
+        
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Iniciar Sesión</h2>
+        <form action="/redirigir/" method="post">
+            {% csrf_token %}
+            <label for="uname"><b>Ingrese email</b></label>
+            <input type="text" placeholder="Enter Username" name="uname" required>
+
+            <label for="psw"><b>Ingrese contraseña</b></label>
+            <input type="password" placeholder="Enter Password" name="psw" required>
+            <input type="hidden" name="action" value="home">
+            <button type="submit" class="entrar-btn" name="action" value="entrar">Entrar</button>
+            <a href="/home/" class="volver-btn">Volver</a>
+
+        </form>
+    </div>
+</body>
+
+</html>
