@@ -8,8 +8,9 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: rgb(198, 253, 253); /* Color de fondo azul */
-            
+            background-color: rgb(198, 253, 253);
+            /* Color de fondo azul */
+
         }
 
         .container {
@@ -73,6 +74,8 @@
             <label for="password_confirmation"><b>Confirmar Contraseña:</b></label>
             <input type="password" placeholder="Confirme Contraseña" name="password_confirmation" required>
 
+            <p id="message" style="color: red;"></p>
+
             <div class="error-message" style="color: red;"></div>
 
 
@@ -89,7 +92,7 @@
             <input type="text" placeholder="Ingrese Género" name="genero" required>
 
             <div class="button-container">
-                <button type="button" onclick="validarContraseñas()" class="registrar-btn">Registrar</button>
+                <button type="button" onclick="consumirAPI()" class="registrar-btn">Registrar</button>
                 <a href="/home/" class="volver-btn">Volver</a>
             </div>
 
@@ -97,64 +100,55 @@
     </div>
 
     <script>
-        function validarContraseñas() {
-            var password = document.getElementsByName("password")[0].value;
-            var confirmPassword = document.getElementsByName("password_confirmation")[0].value;
-            var errorMessage = document.querySelector('.error-message');
+        
 
-            if (password !== confirmPassword) {
-                errorMessage.textContent = "Las contraseñas no coinciden.";
-            } else {
-                errorMessage.textContent = "";
-                // Si las contraseñas coinciden, envía el formulario
-                document.querySelector('form').submit();
-            }
-        }
+        function consumirAPI() {
 
-        function validarRut() {
-            var rut = document.getElementById('rut').value;
-            var rutError = document.getElementById('rut-error');
-            var validacion = validarRutChileno(rut);
+            
 
-            if (!validacion) {
-                rutError.textContent = 'RUT inválido';
-                rutError.style.display = 'block';
-                return false;
-            } else {
-                rutError.style.display = 'none';
-                return true;
-            }
-        }
+            
+            // Hacer la solicitud a la API
+            var pacienteData = {
+                rut_p: document.getElementsByName("rut")[0].value,
+                nombre_p: document.getElementsByName("nombre")[0].value,
+                email_p: document.getElementsByName("email")[0].value,
+                password_p: document.getElementsByName("password")[0].value,
+                fecha_nac_p: document.getElementsByName("fecha_nac")[0].value,
+                direccion_p: document.getElementsByName("direccion")[0].value,
+                telefono_p: document.getElementsByName("telefono")[0].value,
+                genero_p: document.getElementsByName("genero")[0].value
+            };
 
-        function validarRut(rut) {
-            // Eliminar puntos y guión del RUT (si los hay)
-            rut = rut.replace(/\./g, '').replace(/-/g, '');
+            // Enviar datos a la API de Flask
+            fetch('https://centrofinal.crismendez1.repl.co/pacientes/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(pacienteData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message === "Paciente agregado correctamente") {
+                        // Mostrar un mensaje de éxito en la página
+                        var successMessage = document.createElement('div');
+                        successMessage.textContent = 'Se ha agregado el paciente correctamente.';
+                        successMessage.style.color = 'green'; // Puedes ajustar el estilo según tu preferencia
+                        document.body.appendChild(successMessage);
 
-            // Separar el RUT de su dígito verificador
-            var rutNumeros = rut.slice(0, -1);
-            var verificador = rut.slice(-1).toUpperCase();
+                        // Opcional: Redirigir a otra página después de mostrar el mensaje
+                        // window.location.href = '/ruta_de_redireccion';
+                    } else {
+                        // Mostrar un mensaje de error
+                        var errorMessage = document.querySelector('.error-message');
+                        errorMessage.textContent = "Error al registrar paciente.";
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
 
-            // Calcular el dígito verificador esperado
-            var suma = 0;
-            var multiplo = 2;
-            for (var i = rutNumeros.length - 1; i >= 0; i--) {
-                suma += parseInt(rutNumeros.charAt(i)) * multiplo;
-                if (multiplo < 7) {
-                    multiplo++;
-                } else {
-                    multiplo = 2;
-                }
-            }
 
-            var digitoEsperado = 11 - (suma % 11);
-            if (digitoEsperado === 11) {
-                digitoEsperado = 0;
-            } else if (digitoEsperado === 10) {
-                digitoEsperado = 'K';
-            }
-
-            // Comparar el dígito verificador ingresado con el esperado
-            return verificador === digitoEsperado.toString();
         }
     </script>
 </body>

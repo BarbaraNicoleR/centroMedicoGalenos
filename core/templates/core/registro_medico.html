@@ -8,8 +8,9 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: rgb(198, 253, 253); /* Color de fondo azul */
-            
+            background-color: rgb(198, 253, 253);
+            /* Color de fondo azul */
+
         }
 
         .container {
@@ -50,6 +51,12 @@
             background-color: #28a745;
             color: white;
         }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 
@@ -60,21 +67,13 @@
             {% csrf_token %}
             <label for="rut"><b>RUT:</b></label>
             <input type="text" placeholder="Ingrese RUT" name="rut" required>
+            <span class="error-message" id="rut-error"></span> <!-- Elemento para mostrar mensaje de error -->
 
             <label for="nombre"><b>Nombre:</b></label>
             <input type="text" placeholder="Ingrese Nombre" name="nombre" required>
 
             <label for="email"><b>Correo electrónico:</b></label>
             <input type="email" placeholder="Ingrese Correo Electrónico" name="email" required>
-
-            <label for="password"><b>Contraseña:</b></label>
-            <input type="password" placeholder="Ingrese Contraseña" name="password" required>
-
-            <label for="password_confirmation"><b>Confirmar Contraseña:</b></label>
-            <input type="password" placeholder="Confirme Contraseña" name="password_confirmation" required>
-
-            <div class="error-message" style="color: red;"></div>
-
 
             <label for="fecha_nac"><b>Fecha de Nacimiento:</b></label>
             <input type="date" name="fecha_nac" required>
@@ -89,52 +88,36 @@
             <input type="text" placeholder="Ingrese Especialidad" name="especialidad" required>
 
             <div class="button-container">
-                <button type="button" onclick="validarContraseñas()" class="registrar-btn">Registrar</button>
+                <button type="button" onclick="consumirAPI()" class="registrar-btn">Registrar</button>
                 <a href="/home/" class="volver-btn">Volver</a>
             </div>
+
+            <p id="mensaje"></p>
 
         </form>
     </div>
 
     <script>
-        function validarContraseñas() {
-            var password = document.getElementsByName("password")[0].value;
-            var confirmPassword = document.getElementsByName("password_confirmation")[0].value;
-            var errorMessage = document.querySelector('.error-message');
 
-            if (password !== confirmPassword) {
-                errorMessage.textContent = "Las contraseñas no coinciden.";
-            } else {
-                errorMessage.textContent = "";
-                // Si las contraseñas coinciden, envía el formulario
-                document.querySelector('form').submit();
-            }
-        }
-
-        function validarRut() {
+function validarRut() {
             var rut = document.getElementById('rut').value;
             var rutError = document.getElementById('rut-error');
-            var validacion = validarRutChileno(rut);
 
-            if (!validacion) {
-                rutError.textContent = 'RUT inválido';
-                rutError.style.display = 'block';
+            if (!validarRutChileno(rut)) {
+                rutError.textContent = 'RUT inválido, ingrese un RUT válido';
+                rutError.style.color = 'red';
                 return false;
             } else {
-                rutError.style.display = 'none';
+                rutError.textContent = ''; // Limpiar el mensaje de error si el RUT es válido
                 return true;
             }
         }
 
-        function validarRut(rut) {
-            // Elimina CARACTERES DEL RUT 
+        function validarRutChileno(rut) {
             rut = rut.replace(/\./g, '').replace(/-/g, '');
-
-            // SepararA su dígito verificador
             var rutNumeros = rut.slice(0, -1);
             var verificador = rut.slice(-1).toUpperCase();
 
-            // Calcular el dígito verificador esperado
             var suma = 0;
             var multiplo = 2;
             for (var i = rutNumeros.length - 1; i >= 0; i--) {
@@ -153,8 +136,65 @@
                 digitoEsperado = 'K';
             }
 
-            // Comparar el dígito verificador ingresado con el esperado
             return verificador === digitoEsperado.toString();
+        }
+
+
+        function consumirAPI() {
+            var rut = document.getElementsByName("rut")[0].value;
+            var nombre = document.getElementsByName("nombre")[0].value;
+            var email = document.getElementsByName("email")[0].value;
+            var fechaNacimiento = document.getElementsByName("fecha_nac")[0].value;
+            var direccion = document.getElementsByName("direccion")[0].value;
+            var telefono = document.getElementsByName("telefono")[0].value;
+            var especialidad = document.getElementsByName("especialidad")[0].value;
+
+            // Validar el RUT antes de hacer la solicitud a la API
+            if (!validarRutChileno(rut)) {
+                var mensajeElemento = document.getElementById('mensaje');
+                mensajeElemento.textContent = 'RUT inválido, ingrese un RUT válido';
+                mensajeElemento.style.color = 'red';
+                return;
+            }
+            // Verificar si todos los campos están completos
+            if (rut && nombre && email && fechaNacimiento && direccion && telefono && especialidad) {
+                // Hacer la solicitud a la API
+                var medicoData = {
+                    rut_m: rut,
+                    nombre_m: nombre,
+                    email_m: email,
+                    fecha_nac_m: fechaNacimiento,
+                    direccion_m: direccion,
+                    telefono_m: telefono,
+                    especialidad: especialidad
+                };
+
+                fetch('https://centrofinal.crismendez1.repl.co/medicos/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(medicoData)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        var mensajeElemento = document.getElementById('mensaje');
+                        if (data.message === "medico agregado correctamente") {
+                            // Mostrar un mensaje de éxito
+                            mensajeElemento.textContent = "ERROR AL REGISTRAR MEDICO";
+                            mensajeElemento.style.color = 'red';
+                        } else {
+                            // Mostrar un mensaje de error si la API devuelve un mensaje diferente
+                            mensajeElemento.textContent = "MEDICO REGISTRADO CORRECTAMENTE ";
+                            mensajeElemento.style.color = 'green';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            } else {
+                alert("Por favor, complete todos los campos.");
+            }
         }
     </script>
 </body>
