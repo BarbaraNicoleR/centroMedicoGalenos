@@ -99,45 +99,45 @@
 
     <script>
 
-function validarRut() {
-            var rut = document.getElementById('rut').value;
-            var rutError = document.getElementById('rut-error');
+        function validarRut() {
+                    var rut = document.getElementById('rut').value;
+                    var rutError = document.getElementById('rut-error');
 
-            if (!validarRutChileno(rut)) {
-                rutError.textContent = 'RUT inválido, ingrese un RUT válido';
-                rutError.style.color = 'red';
-                return false;
-            } else {
-                rutError.textContent = ''; // Limpiar el mensaje de error si el RUT es válido
-                return true;
-            }
-        }
-
-        function validarRutChileno(rut) {
-            rut = rut.replace(/\./g, '').replace(/-/g, '');
-            var rutNumeros = rut.slice(0, -1);
-            var verificador = rut.slice(-1).toUpperCase();
-
-            var suma = 0;
-            var multiplo = 2;
-            for (var i = rutNumeros.length - 1; i >= 0; i--) {
-                suma += parseInt(rutNumeros.charAt(i)) * multiplo;
-                if (multiplo < 7) {
-                    multiplo++;
-                } else {
-                    multiplo = 2;
+                    if (!validarRutChileno(rut)) {
+                        rutError.textContent = 'RUT inválido, ingrese un RUT válido';
+                        rutError.style.color = 'red';
+                        return false;
+                    } else {
+                        rutError.textContent = ''; // Limpiar el mensaje de error si el RUT es válido
+                        return true;
+                    }
                 }
-            }
 
-            var digitoEsperado = 11 - (suma % 11);
-            if (digitoEsperado === 11) {
-                digitoEsperado = 0;
-            } else if (digitoEsperado === 10) {
-                digitoEsperado = 'K';
-            }
+                function validarRutChileno(rut) {
+                    rut = rut.replace(/\./g, '').replace(/-/g, '');
+                    var rutNumeros = rut.slice(0, -1);
+                    var verificador = rut.slice(-1).toUpperCase();
 
-            return verificador === digitoEsperado.toString();
-        }
+                    var suma = 0;
+                    var multiplo = 2;
+                    for (var i = rutNumeros.length - 1; i >= 0; i--) {
+                        suma += parseInt(rutNumeros.charAt(i)) * multiplo;
+                        if (multiplo < 7) {
+                            multiplo++;
+                        } else {
+                            multiplo = 2;
+                        }
+                    }
+
+                    var digitoEsperado = 11 - (suma % 11);
+                    if (digitoEsperado === 11) {
+                        digitoEsperado = 0;
+                    } else if (digitoEsperado === 10) {
+                        digitoEsperado = 'K';
+                    }
+
+                    return verificador === digitoEsperado.toString();
+                }
 
 
         function consumirAPI() {
