@@ -51,6 +51,7 @@
             background-color: #28a745;
             color: white;
         }
+
         .error-message {
             color: red;
             font-size: 14px;
@@ -74,6 +75,7 @@
 
             <label for="email"><b>Correo electrónico:</b></label>
             <input type="email" placeholder="Ingrese Correo Electrónico" name="email" required>
+            <span class="error-message" id="email-error"></span> <!-- Elemento para mostrar mensaje de error -->
 
             <label for="fecha_nac"><b>Fecha de Nacimiento:</b></label>
             <input type="date" name="fecha_nac" required>
@@ -99,45 +101,85 @@
 
     <script>
 
+        function validarEmail() {
+            var email = document.getElementsByName("email")[0].value;
+            var emailError = document.getElementById('email-error');
+
+            // Patrón para validar el correo electrónico
+            var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!emailPattern.test(email)) {
+                emailError.textContent = 'Correo electrónico inválido, ingrese un correo válido';
+                emailError.style.color = 'red';
+                return false;
+            } else {
+                emailError.textContent = ''; // Limpiar el mensaje de error si el correo electrónico es válido
+                return true;
+            }
+        }
+
+        function validarFechaNacimiento() {
+            var fechaNacimiento = new Date(document.getElementsByName("fecha_nac")[0].value);
+            var fechaActual = new Date();
+
+            // Verificar si la fecha de nacimiento es mayor que la fecha actual
+            if (fechaNacimiento > fechaActual) {
+                var mensajeElemento = document.getElementById('mensaje');
+                mensajeElemento.textContent = 'La fecha de nacimiento no debe ser mayor a la actual';
+                mensajeElemento.style.color = 'red';
+                return false;
+            } else {
+                // Limpiar el mensaje de error si la fecha de nacimiento es válida
+                var mensajeElemento = document.getElementById('mensaje');
+                mensajeElemento.textContent = '';
+                return true;
+            }
+        }
+
+
+
+
         function validarRut() {
-                    var rut = document.getElementById('rut').value;
-                    var rutError = document.getElementById('rut-error');
+            var rut = document.getElementById('rut').value;
+            var rutError = document.getElementById('rut-error');
 
-                    if (!validarRutChileno(rut)) {
-                        rutError.textContent = 'RUT inválido, ingrese un RUT válido';
-                        rutError.style.color = 'red';
-                        return false;
-                    } else {
-                        rutError.textContent = ''; // Limpiar el mensaje de error si el RUT es válido
-                        return true;
-                    }
+            if (!validarRutChileno(rut)) {
+                rutError.textContent = 'RUT inválido, ingrese un RUT válido';
+                rutError.style.color = 'red';
+                return false;
+            } else {
+                rutError.textContent = ''; // Limpiar el mensaje de error si el RUT es válido
+                return true;
+            }
+        }
+
+        function validarRutChileno(rut) {
+            rut = rut.replace(/\./g, '').replace(/-/g, '');
+            var rutNumeros = rut.slice(0, -1);
+            var verificador = rut.slice(-1).toUpperCase();
+
+            var suma = 0;
+            var multiplo = 2;
+            for (var i = rutNumeros.length - 1; i >= 0; i--) {
+                suma += parseInt(rutNumeros.charAt(i)) * multiplo;
+                if (multiplo < 7) {
+                    multiplo++;
+                } else {
+                    multiplo = 2;
                 }
+            }
 
-                function validarRutChileno(rut) {
-                    rut = rut.replace(/\./g, '').replace(/-/g, '');
-                    var rutNumeros = rut.slice(0, -1);
-                    var verificador = rut.slice(-1).toUpperCase();
+            var digitoEsperado = 11 - (suma % 11);
+            if (digitoEsperado === 11) {
+                digitoEsperado = 0;
+            } else if (digitoEsperado === 10) {
+                digitoEsperado = 'K';
+            }
 
-                    var suma = 0;
-                    var multiplo = 2;
-                    for (var i = rutNumeros.length - 1; i >= 0; i--) {
-                        suma += parseInt(rutNumeros.charAt(i)) * multiplo;
-                        if (multiplo < 7) {
-                            multiplo++;
-                        } else {
-                            multiplo = 2;
-                        }
-                    }
+            return verificador === digitoEsperado.toString();
+        }
 
-                    var digitoEsperado = 11 - (suma % 11);
-                    if (digitoEsperado === 11) {
-                        digitoEsperado = 0;
-                    } else if (digitoEsperado === 10) {
-                        digitoEsperado = 'K';
-                    }
 
-                    return verificador === digitoEsperado.toString();
-                }
 
 
         function consumirAPI() {
@@ -148,6 +190,18 @@
             var direccion = document.getElementsByName("direccion")[0].value;
             var telefono = document.getElementsByName("telefono")[0].value;
             var especialidad = document.getElementsByName("especialidad")[0].value;
+
+            // Validar el correo electrónico antes de hacer la solicitud a la API
+            if (!validarEmail()) {
+                return; // Detener el proceso si el correo electrónico es inválido
+            }
+
+
+            // Validar la fecha de nacimiento
+            if (!validarFechaNacimiento()) {
+                return; // Detener el proceso si la fecha de nacimiento es inválida
+            }
+
 
             // Validar el RUT antes de hacer la solicitud a la API
             if (!validarRutChileno(rut)) {
