@@ -87,7 +87,12 @@
             <input type="text" placeholder="Ingrese Teléfono" name="telefono" required>
 
             <label for="especialidad"><b>Especialidad:</b></label>
-            <input type="text" placeholder="Ingrese Especialidad" name="especialidad" required>
+            <select name="especialidad" required>
+                <option value="medicina_general">Medicina General</option>
+                <option value="odontologia">Odontología</option>
+                <option value="cardiologia">Cardiología</option>
+                <!-- Agrega más opciones según sea necesario -->
+            </select>
 
             <div class="button-container">
                 <button type="button" onclick="consumirAPI()" class="registrar-btn">Registrar</button>
