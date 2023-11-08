@@ -36,8 +36,6 @@ def registro_medico(request):
     return render(request, 'core/registro_medico.html')
 
 
-
-
 #############COMO CONECTAR LA PINCHE API A MI DJANGO ########################3
 
 

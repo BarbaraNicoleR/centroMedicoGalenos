@@ -10,5 +10,6 @@ urlpatterns = [
     path('redirigir/', views.redirigir, name='redirigir'),
     path('registro_paciente/', views.registro_paciente , name= "registro_paciente"),
     path('registro_medico/', views.registro_medico , name= "registro_medico"),
+    
 
-]
+]       
