@@ -35,6 +35,13 @@ def registro_medico(request):
             return redirect('/')  
     return render(request, 'core/registro_medico.html')
 
+def reserva_medico(request):
+    if request.method == 'GET':
+        action = request.GET.get('action')
+        if action == 'home':
+            return ('/')
+    return render(request, 'core/reserva.html')
+
 
 #############COMO CONECTAR LA PINCHE API A MI DJANGO ########################3
 
