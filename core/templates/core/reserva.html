@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,8 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: rgb(198, 253, 253); /* Color de fondo azul */
+            background-color: rgb(198, 253, 253);
+            /* Color de fondo azul */
         }
 
         .container {
@@ -101,10 +103,10 @@
 
 <body>
     <div class="container">
-        <h2>Registrar Médico</h2>
+        <h2>Rerva de Hora </h2>
         <form action="/reserva/" method="post">
             {% csrf_token %}
-            
+
             <label for="id_res"><b>id_res:</b></label>
             <input type="text" name="id_res" required>
 
@@ -116,16 +118,16 @@
 
             <label for="fecha_res"><b>Fecha de Reserva:</b></label>
             <input type="date" name="fecha_res" required>
-            
+
             <label for="hora_res"><b>Hora de Reserva:</b></label>
             <input type="time" id="hora_res" name="hora_res">
 
 
             <label for="descripcion"><b>Descripción:</b></label>
             <input type="text" placeholder="Ingrese Descripción" name="descripcion" required>
-            
 
-            
+
+
             <div class="button-container">
                 <button type="button" onclick="consumirAPI()" class="registrar-btn">Registrar</button>
                 <a href="/home/" class="volver-btn">Volver</a>
@@ -183,5 +185,3 @@
             }
         }
     </script>
-</body>
-</html>
