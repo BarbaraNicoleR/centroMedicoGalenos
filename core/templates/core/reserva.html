@@ -60,26 +60,29 @@
 <body>
     <div class="container">
         <h2>Registrar Médico</h2>
-        <form action="/registro_medico/" method="post">
+        <form action="/reserva/" method="post">
             {% csrf_token %}
             
             <label for="id_res"><b>id_res:</b></label>
-            <input type="text"  name="id_res" required>
+            <input type="text" name="id_res" required>
 
             <label for="rut_pac"><b>rut_pac:</b></label>
             <input type="text" name="rut_pac" required>
 
             <label for="rut_med"><b>rut_med:</b></label>
-            <input type="text"  name="rut_med" required>
+            <input type="text" name="rut_med" required>
 
             <label for="fecha_res"><b>Fecha de Reserva:</b></label>
             <input type="date" name="fecha_res" required>
             
+            <label for="hora_res"><b>Hora de Reserva:</b></label>
+            <input type="time" id="hora_res" name="hora_res">
+
+
             <label for="descripcion"><b>Descripción:</b></label>
             <input type="text" placeholder="Ingrese Descripción" name="descripcion" required>
             
-            <label for="hora_res"><b>Hora de Reserva:</b></label>
-            <input type="time" id="hora_res" name="hora_res">
+     
             
             <div class="button-container">
                 <button type="button" onclick="consumirAPI()" class="registrar-btn">Registrar</button>
@@ -91,19 +94,25 @@
         </form>
     </div>
     <script>
+
+
+
         function consumirAPI() {
             var id_res = document.getElementsByName("id_res")[0].value;
-            var rut_pac = document.getElementsByName("rut_med")[0].value;
+            var rut_pac = document.getElementsByName("rut_pac")[0].value;
             var rut_med = document.getElementsByName("rut_med")[0].value;
-            var fecha_reserva = document.getElementsByName("fecha_res")[0].value;
+            var fecha_res = document.getElementsByName("fecha_res")[0].value;
             var descripcion = document.getElementsByName("descripcion")[0].value;
-            var hora_reserva = document.getElementsByName("hora_res")[0].value;
+            var hora_res = document.getElementsByName("hora_res")[0].value;
             
-            if (fecha_reserva && descripcion && hora_reserva) {
-                var medicoData = {
-                    fecha_reserva: fecha_reserva,
+            if (id_res && rut_pac && rut_med && fecha_res && descripcion && hora_res) {
+                var reservaData = {
+                    id_res: id_res,
+                    rut_pac: rut_pac,
+                    rut_med: rut_med,
+                    fecha_res: fecha_res,
                     descripcion: descripcion,
-                    hora_reserva: hora_reserva
+                    hora_res: hora_res
                 };
                 
                 fetch('https://centrofinal.crismendez1.repl.co/reservas/add', {
@@ -111,7 +120,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(medicoData)
+                    body: JSON.stringify(reservaData)
                 })
                 .then(response => response.json())
                 .then(data => {
