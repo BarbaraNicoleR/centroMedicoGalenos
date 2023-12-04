@@ -107,6 +107,9 @@
         <form action="/reserva/" method="post">
             {% csrf_token %}
 
+            <label for="rut_pac"><b>ID Reserva:</b></label>
+            <input type="text" placeholder="Introduzca el ID" name="id_res" required>
+
             <label for="rut_pac"><b>RUT Paciente:</b></label>
             <input type="text" placeholder="Introduzca su RUT" name="rut_pac" required>
 
@@ -136,14 +139,16 @@
 
 
         function consumirAPI() {
+            var id_res = document.getElementsByName("id_res")[0].value;
             var rut_pac = document.getElementsByName("rut_pac")[0].value;
             var rut_med = document.getElementsByName("rut_med")[0].value;
             var fecha_res = document.getElementsByName("fecha_res")[0].value;
             var descripcion = document.getElementsByName("descripcion")[0].value;
             var hora_res = document.getElementsByName("hora_res")[0].value;
 
-            if (rut_pac && rut_med && fecha_res && descripcion && hora_res) {
+            if (id_res && rut_pac && rut_med && fecha_res && descripcion && hora_res) {
                 var reservaData = {
+                    id_res: id_res,
                     rut_pac: rut_pac,
                     rut_med: rut_med,
                     fecha_res: fecha_res,
