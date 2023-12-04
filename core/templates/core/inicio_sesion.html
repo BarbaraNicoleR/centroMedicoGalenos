@@ -8,8 +8,9 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: rgb(198, 253, 253); /* Color de fondo azul */
-            
+            background-color: rgb(198, 253, 253);
+            /* Color de fondo azul */
+
 
         }
 
@@ -45,8 +46,7 @@
         }
 
         .button-container {
-            display: flex;
-            justify-content: space-between;
+            text-align: center;
             margin-top: 20px;
         }
 
@@ -59,13 +59,15 @@
         }
 
         .entrar-btn {
-            background-color:#28a745;
+            background-color: #28a745;
             color: white;
             margin-right: 10px;
         }
-        
 
-        
+        .inicio-btn {
+            background-color: #28a745;
+            color: white;
+        }
     </style>
 </head>
 
@@ -79,12 +81,52 @@
 
             <label for="psw"><b>Ingrese contraseña</b></label>
             <input type="password" placeholder="Enter Password" name="psw" required>
-            <input type="hidden" name="action" value="home">z
-            <button type="submit" class="entrar-btn" name="action" value="entrar">Entrar</button>
-            <a href="/home/" class="volver-btn">Volver</a>
+            <input type="hidden" name="action" value="home">
+
+            <div class="button-container">
+                <button type="button" onclick="consumirAPI()" class="inicio-btn">Registrar</button>
+                <a href="/home/" class="volver-btn">Volver</a>
+            </div>
+
+            <p id="mensaje"></p>
 
         </form>
     </div>
+    <script>
+
+        function consumirAPI() {
+            var email = document.getElementsByName("uname")[0].value;
+            var password = document.getElementsByName("psw")[0].value;
+
+            fetch('https://centrofinal.crismendez1.repl.co/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({ email_p: email, password_p: password })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.status === "success") {
+                        window.location.href = '/home/';
+                    } else {
+                        document.getElementById('mensaje').innerText = 'Error al iniciar sesión.';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('mensaje').innerText = 'Error en el inicio de sesión.';
+                });
+        }
+
+
+    </script>
 </body>
 
 </html>
