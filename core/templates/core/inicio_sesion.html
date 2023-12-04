@@ -8,9 +8,8 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: rgb(198, 253, 253);
-            /* Color de fondo azul */
-
+            background-color: rgb(198, 253, 253); /* Color de fondo azul */
+            
 
         }
 
@@ -46,10 +45,10 @@
         }
 
         .button-container {
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
             margin-top: 20px;
         }
-
 
         button {
             flex: 1;
@@ -60,15 +59,13 @@
         }
 
         .entrar-btn {
-            background-color: #28a745;
+            background-color:#28a745;
             color: white;
             margin-right: 10px;
         }
+        
 
-        .iniciosesion-btn {
-            background-color: #28a745;
-            color: white;
-        }
+        
     </style>
 </head>
 
@@ -82,51 +79,12 @@
 
             <label for="psw"><b>Ingrese contraseña</b></label>
             <input type="password" placeholder="Enter Password" name="psw" required>
-            <input type="hidden" name="action" value="home">
-
-            <div class="button-container">
-                <button type="button" onclick="consumirAPI()" class="iniciosesion-btn">Entrar</button>
-                <a href="/home/" class="volver-btn">Volver</a>
-            </div>
-
-            <p id="mensaje"></p>
+            <input type="hidden" name="action" value="home">z
+            <button type="submit" class="entrar-btn" name="action" value="entrar">Entrar</button>
+            <a href="/home/" class="volver-btn">Volver</a>
 
         </form>
     </div>
-    <script>
-        function consumirAPI() {
-            // Obtener los valores del formulario
-            var email = document.getElementsByName("email")[0].value;
-            var password = document.getElementsByName("password")[0].value;
-
-            // Validar el email antes de hacer la solicitud a la API (puedes agregar tu propia lógica aquí)
-
-            // Hacer la solicitud a la API de login
-            fetch('https://centrofinal.crismendez1.repl.co/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: 'email_p=' + encodeURIComponent(email) + '&password_p=' + encodeURIComponent(password)
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.logged_in) {
-                        // Redirigir o realizar otras acciones después del inicio de sesión
-                        //window.location.href = '/ruta_de_redireccion';
-                    } else {
-                        // Mostrar un mensaje de error
-                        var mensajeElemento = document.getElementById('mensaje');
-                        mensajeElemento.textContent = 'Error en el inicio de sesión: ' + data.message;
-                        mensajeElemento.style.color = 'red';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
-    </script>
 </body>
 
 </html>
