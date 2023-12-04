@@ -4,11 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Centro Médico Galenos - Registrar Médico</title>
+    <title>C. Galenos - Reserva de hora</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: rgb(198, 253, 253); /* Color de fondo azul uwu*/
+            background-color: rgb(198, 253, 253);
+            /* Color de fondo azul uwu*/
         }
 
         .container {
@@ -102,18 +103,15 @@
 
 <body>
     <div class="container">
-        <h2>Rerva de Hora </h2>
+        <h2>Reserva de hora</h2>
         <form action="/reserva/" method="post">
             {% csrf_token %}
 
-            <label for="id_res"><b>id_res:</b></label>
-            <input type="text" name="id_res" required>
+            <label for="rut_pac"><b>RUT Paciente:</b></label>
+            <input type="text" placeholder="Introduzca su RUT" name="rut_pac" required>
 
-            <label for="rut_pac"><b>rut_pac:</b></label>
-            <input type="text" name="rut_pac" required>
-
-            <label for="rut_med"><b>rut_med:</b></label>
-            <input type="text" name="rut_med" required>
+            <label for="rut_med"><b>RUT Médico:</b></label>
+            <input type="text" placeholder="Introduzca el RUT del médico" name="rut_med" required>
 
             <label for="fecha_res"><b>Fecha de Reserva:</b></label>
             <input type="date" name="fecha_res" required>
@@ -121,11 +119,8 @@
             <label for="hora_res"><b>Hora de Reserva:</b></label>
             <input type="time" id="hora_res" name="hora_res">
 
-
             <label for="descripcion"><b>Descripción:</b></label>
-            <input type="text" placeholder="Ingrese Descripción" name="descripcion" required>
-
-
+            <input type="text" placeholder="Ingrese el motivo de su reserva" name="descripcion" required>
 
             <div class="button-container">
                 <button type="button" onclick="consumirAPI()" class="registrar-btn">Registrar</button>
@@ -133,7 +128,7 @@
             </div>
 
             <p id="mensaje"></p>
-            
+
         </form>
     </div>
     <script>
@@ -141,23 +136,21 @@
 
 
         function consumirAPI() {
-            var id_res = document.getElementsByName("id_res")[0].value;
             var rut_pac = document.getElementsByName("rut_pac")[0].value;
             var rut_med = document.getElementsByName("rut_med")[0].value;
             var fecha_res = document.getElementsByName("fecha_res")[0].value;
             var descripcion = document.getElementsByName("descripcion")[0].value;
             var hora_res = document.getElementsByName("hora_res")[0].value;
 
-                        if (id_res && rut_pac && rut_med && fecha_res && descripcion && hora_res) {
+            if (rut_pac && rut_med && fecha_res && descripcion && hora_res) {
                 var reservaData = {
-                    id_res: id_res,
                     rut_pac: rut_pac,
                     rut_med: rut_med,
                     fecha_res: fecha_res,
                     descripcion: descripcion,
                     hora_res: hora_res
                 };
-                
+
                 fetch('https://centrofinal.crismendez1.repl.co/reservas/add', {
                     method: 'POST',
                     headers: {
@@ -165,20 +158,20 @@
                     },
                     body: JSON.stringify(reservaData)
                 })
-                .then(response => response.json())
-                .then(data => {
-                    var mensajeElemento = document.getElementById('mensaje');
-                    if (data.message === "Reserva agregada correctamente") {
-                        mensajeElemento.textContent = "Reserva registrada correctamente";
-                        mensajeElemento.style.color = 'green';
-                    } else {
-                        mensajeElemento.textContent = "Error al registrar reserva";
-                        mensajeElemento.style.color = 'red';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+                    .then(response => response.json())
+                    .then(data => {
+                        var mensajeElemento = document.getElementById('mensaje');
+                        if (data.message === "Reserva agregada correctamente") {
+                            mensajeElemento.textContent = "Reserva registrada correctamente";
+                            mensajeElemento.style.color = 'green';
+                        } else {
+                            mensajeElemento.textContent = "Error al registrar reserva";
+                            mensajeElemento.style.color = 'red';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
             } else {
                 alert("Por favor, complete todos los campos.");
             }

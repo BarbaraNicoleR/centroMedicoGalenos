@@ -51,6 +51,3 @@ def reserva(request):
     return render(request, 'core/reserva.html')
 
 
-#############COMO CONECTAR LA PINCHE API A MI DJANGO ########################3
-
-
